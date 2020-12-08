@@ -27,9 +27,9 @@ class BuildingController extends Controller
     public function index()
     {
         $building = Building::all();
-        $facility = FacilityRules::all();
+        $rules = FacilityRules::all();
 
-        return view('/building/index', compact('building', 'facility'));
+        return view('/dashboard/building/index', compact('building', 'rules'));
     }
 
     /**
@@ -42,7 +42,7 @@ class BuildingController extends Controller
         $project = Project::all();
         $facility = Facility::all();
 
-        return view('/building/create', compact('project', 'facility'));
+        return view('/dashboard/building/create', compact('project', 'facility'));
     }
 
     /**
@@ -53,24 +53,33 @@ class BuildingController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'project_id' => 'required',
+            'nama' => 'required|string|min:3',
+            'lantai' => 'required|numeric',
+            'luas' => 'required|numeric',
+            'deskripsi' => 'required|min:8'
+        ]);
+
         $building = new Building;
-        $building->id_project   = $request->id_project;
+        $building->project_id   = $request->project_id;
         $building->nama         = $request->nama;
         $building->lantai       = $request->lantai;
         $building->luas         = $request->luas;
         $building->deskripsi    = $request->deskripsi;
         $building->save();
         
-
-        $loop = $request->get('id_facility');
-        foreach ($loop as $key) {
-            $facility = new FacilityRules;
-            $facility->id_building = $building->id_building;
-            $facility->id_facility = $key;
-            $facility->save();
-        };
-
-        return redirect()->action('BuildingController@index');
+        if (request()->has('facility_id')) {
+            $loop = $request->get('facility_id');
+            foreach ($loop as $key) {
+                $facility = new FacilityRules;
+                $facility->building_id = $building->id;
+                $facility->facility_id = $key;
+                $facility->save();
+            };
+        }
+        
+        return redirect()->action('BuildingController@index')->with('store', 'Data building berhasil ditambahkan');
     }
 
     /**
@@ -92,16 +101,17 @@ class BuildingController extends Controller
      */
     public function edit($id)
     {
-        $building = Building::where('id_building', $id)->first();
+        $building = Building::where('id', $id)->first();
         $project = Project::all();
         $list = new Facility;
-        $rules = FacilityRules::select('id_facility')->where('id_building', $id);
+        $rules = FacilityRules::select('facility_id')->where('building_id', $id)->get();
         $facility = $list->whereHas('rules', function ($query) use ($rules){
-            $query->whereIn('id_facility', $rules);
+            $query->whereIn('facility_id', $rules);
         })->get();
         $fac = $list->get();
 
-        return view('/building/edit', compact('building', 'project', 'facility', 'fac'));
+        // dd($facility);
+        return view('/dashboard/building/edit', compact('building', 'project', 'facility', 'fac' ,'rules'));
     }
 
     /**
@@ -113,16 +123,57 @@ class BuildingController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Building::where('id_building', $id)
-            ->update([
-                'id_project'    => $request->id_project,
-                'nama'          => $request->nama,
-                'lantai'        => $request->lantai,
-                'luas'          => $request->luas,
-                'deskripsi'     => $request->deskripsi
-            ]);
+        // dd($request->facility_id);
+        $request->validate([
+            'project_id' => 'required',
+            'nama' => 'required|string|min:3',
+            'lantai' => 'required|numeric',
+            'luas' => 'required|numeric',
+            'deskripsi' => 'required|min:8'
+        ]);
 
-        return redirect()->action('BuildingController@index');
+        $building = Building::find($id);
+        $building->project_id   = $request->project_id;
+        $building->nama         = $request->nama;
+        $building->lantai       = $request->lantai;
+        $building->luas         = $request->luas;
+        $building->deskripsi    = $request->deskripsi;
+        $building->save();
+
+        // $loop = $request->get('facility_id');
+        // foreach ($loop as $key) {
+        //     $check = FacilityRules::where([
+        //         ['building_id', $building->id],
+        //         ['facility_id', $key]
+        //     ])->count();
+            
+        //     if ($check == 1) {
+        //         FacilityRules::where([
+        //             ['building_id', $building->id],
+        //             ['facility_id', $key]
+        //         ])->delete();
+        //     }
+        //     $facility = new FacilityRules;
+        //     $facility->building_id = $building->id;
+        //     $facility->facility_id = $key;
+        //     $facility->save();
+        // };
+
+        if ($request->facility_id != null) {
+            FacilityRules::where('building_id', $building->id)->delete();
+
+            $loop = $request->get('facility_id');
+            foreach ($loop as $key) {
+                $facility = new FacilityRules;
+                $facility->building_id = $building->id;
+                $facility->facility_id = $key;
+                $facility->save();
+            };
+        } else {
+            FacilityRules::where('building_id', $building->id)->delete();
+        }
+
+        return redirect()->action('BuildingController@index')->with('update', 'Data building berhasil diupdate');
     }
 
     /**
@@ -141,24 +192,29 @@ class BuildingController extends Controller
     public function check($building,  $facility)
     {
         $check = FacilityRules::where([
-            ['id_building', $building],
-            ['id_facility', $facility]
+            ['building_id', $building],
+            ['facility_id', $facility]
         ])->count();
         
         if ($check == 0) {
             FacilityRules::create([
-                'id_building'       => $building,
-                'id_facility'    => $facility
+                'building_id'       => $building,
+                'facility_id'    => $facility
             ]);
 
             return response()->json('Input');
         } else {
             FacilityRules::where([
-                ['id_building', $building],
-                ['id_facility', $facility]
+                ['building_id', $building],
+                ['facility_id', $facility]
             ])->delete();
 
             return response()->json('Hapus');
         }
+    }
+
+    public function facility()
+    {
+        return response()->json('Hello');
     }
 }

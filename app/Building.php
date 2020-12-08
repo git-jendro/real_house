@@ -6,24 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Building extends Model
 {
-    protected $primaryKey = 'id_building';
-
-    protected $fillable = [
-        'id_project', 'nama', 'lantai', 'luas', 'deskripsi'
-    ];
+    protected $guard = 'id';
 
     public function project()
     {
-        return $this->belongsTo('App\Project', 'id_project', 'id_project');
+        return $this->belongsTo(Project::class);
     }
 
     public function rules()
     {
-        return $this->hasMany('App\FacilityRules', 'id_building');
+        return $this->hasMany(FacilityRules::class);
     }
 
     public function unit()
     {
-        return $this->hasMany('App\Unit', 'id_building');
+        return $this->hasMany(Unit::class);
     }
 }

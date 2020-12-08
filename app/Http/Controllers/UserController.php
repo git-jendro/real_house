@@ -111,10 +111,10 @@ class UserController extends Controller
             'role' => 'required'
         ]);
         $user = User::find($id);
-        $user->name = is_null($request->name) ? $user->name : $request->name;
-        $user->email = is_null($request->email) ? $user->email : $request->email;
-        $user->password = is_null($request->password) ? $user->password : $request->password;
-        $user->role_id = is_null($request->role) ? $user->role : $request->role;
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = $request->password;
+        $user->role_id = $request->role;
         $user->save();
 
         return redirect()->action('UserController@index')->with('update', 'Data user berhasil diupdate');

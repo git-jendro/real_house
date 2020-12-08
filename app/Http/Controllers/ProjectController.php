@@ -103,9 +103,9 @@ class ProjectController extends Controller
         ]);
 
         $project = Project::find($id);
-        $project->nama_pt = is_null($request->nama_pt) ? $project->nama_pt : $request->nama_pt;
-        $project->nama_project = is_null($request->nama_project) ? $project->nama_project : $request->nama_project;
-        $project->alamat = is_null($request->alamat) ? $project->alamat : $request->alamat;
+        $project->nama_pt = $request->nama_pt;
+        $project->nama_project = $request->nama_project;
+        $project->alamat = $request->alamat;
         $project->save();
 
         return redirect()->action('ProjectController@index')->with('update', 'Data project berhasil diupdate');

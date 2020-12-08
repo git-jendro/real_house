@@ -8,19 +8,15 @@ class AmenityRules extends Model
 {
     protected $table = 'amenity_rules';
 
-    protected $fillable = [
-        'id_unit', 'id_amenity'
-    ];
-
-    protected $primaryKey = 'id_rules';
+    protected $guard = 'id';
 
     public function unit()
     {
-        return $this->belongsTo('App\Unit', 'id_unit', 'id_unit');
+        return $this->belongsTo(Unit::class);
     }
 
     public function amenity()
     {
-        return $this->belongsTo('App\Amenity', 'id_amenity', 'id_amenity');
+        return $this->belongsTo(Amenity::class);
     }
 }

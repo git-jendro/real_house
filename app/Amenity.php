@@ -6,14 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Amenity extends Model
 {
-    protected $fillable = [
-        'nama', 'icon'
-    ];
-
-    protected $primaryKey = 'id_amenity';
+    protected $guard = 'id';
 
     public function rules()
     {
-        return $this->hasMany('App\AmenityRules', 'id_amenity');
+        return $this->hasMany(AmenityRules::class);
     }
 }

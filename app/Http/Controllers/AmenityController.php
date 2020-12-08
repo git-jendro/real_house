@@ -26,7 +26,7 @@ class AmenityController extends Controller
     {
         $amenity = Amenity::all();
 
-        return view('/kelengkapan/index', compact('amenity'));
+        return view('/dashboard/amenity/index', compact('amenity'));
     }
 
     /**
@@ -36,7 +36,7 @@ class AmenityController extends Controller
      */
     public function create()
     {
-        return view('/kelengkapan/create');
+        return view('/dashboard/amenity/create');
     }
 
     /**
@@ -47,12 +47,17 @@ class AmenityController extends Controller
      */
     public function store(Request $request)
     {  
-        Amenity::create([
-            'nama'  => $request->nama,
-            'icon'  => Storage::put('Amenity', $request->icon),
+        $request->validate([
+            'nama' => 'required|string|min:2',
+            'icon' => 'required',
         ]);
 
-        return redirect()->action('AmenityController@index');
+        $amenity = new Amenity;
+        $amenity->nama = $request->nama;
+        $amenity->icon = Storage::put('Amenity', $request->icon);
+        $amenity->save();
+
+        return redirect()->action('AmenityController@index')->with('store', 'Data amenity berhasil ditambahkan');
     }
 
     /**
@@ -74,9 +79,9 @@ class AmenityController extends Controller
      */
     public function edit($id)
     {
-        $amenity = Amenity::where('id_amenity', $id)->first();
+        $amenity = Amenity::where('id', $id)->first();
 
-        return view('/kelengkapan/edit', compact('amenity'));
+        return view('/dashboard/amenity/edit', compact('amenity'));
     }
 
     /**
@@ -88,19 +93,19 @@ class AmenityController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Amenity::where('id_amenity', $id)
-        ->update([
-            'nama'  => $request->nama
+        $request->validate([
+            'nama' => 'required|string|min:2',
         ]);
 
+        $amenity = Amenity::find($id);
+        $amenity->nama = $request->nama;
+
         if (request()->has('icon')) {
-            Amenity::where('id_amenity', $id)
-                ->update([
-                    'icon' => Storage::put('Amenity', request()->icon)
-                ]);
+            $amenity->icon = Storage::put('Amenity', $request->icon);
+            $amenity->save();
         }
 
-        return redirect()->action('AmenityController@index');
+        return redirect()->action('AmenityController@index')->with('update', 'Data amenity berhasil diupdate');
     }
 
     /**
@@ -113,6 +118,6 @@ class AmenityController extends Controller
     {
         Amenity::destroy($id);
 
-        return redirect()->action('AmenityController@index');
+        return redirect()->action('AmenityController@index')->with('delete', 'Data amenity berhasil dihapus');
     }
 }

@@ -11,6 +11,6 @@ class Project extends Model
     
     public function building()
     {
-        return $this->hasMany('App\Building');
+        return $this->hasMany(Building::class);
     }
 }

@@ -8,7 +8,7 @@
     <div class="py-2">
         <a href="/dashboard/building/create" class="btn btn-primary">Tambah Building</a>
     </div>
-    @if (session('store'))
+    @if (session('store')) 
     <div class="alert alert-success">
         {{ session('store') }}
     </div>
@@ -27,12 +27,16 @@
                 <thead>
                     <tr>
                         <th style="width: 10px">#</th>
-                        <th>Nama</th>
-                        <th>Project</th>
-                        <th>Fasilitas</th>
-                        <th>Jml Lantai</th>
-                        <th>Luas</th>
-                        <th>Deskripsi</th>
+                        <th class="col-auto">Nama</th>
+                        <th class="col-auto">Building</th>
+                        <th class="col-auto">Kelengkapan</th>
+                        <th class="col-auto">Gambar</th>
+                        <th class="col-auto">Harga Jual</th>
+                        <th class="col-auto">Harga Sewa</th>
+                        <th class="col-auto">Harga Cicil</th>
+                        <th class="col-auto">Diskon</th>
+                        <th class="col-auto">VR Link</th>
+                        <th class="col-auto">Deskripsi</th>
                         <th colspan="3" class="text-center">Action</th>
                     </tr>
                 </thead>
@@ -44,12 +48,12 @@
                             {{Str::limit($item->nama, 15)}}
                         </td>
                         <td class="col-auto">
-                            {{Str::limit($item->project->nama_project, 20)}}
+                            {{Str::limit($item->building->nama, 20)}}
                         </td>
                         <td>
                             @foreach ($rules as $row)
-                                @if ($item->id == $row->building_id)
-                                    <img src="{{ asset('storage/'.$row->facility->icon) }}" width="20px" height="20px">
+                                @if ($item->id == $row->unit_id)
+                                    <img src="{{ asset('storage/'.$row->amenity->icon) }}" width="20px" height="20px">
                                 @endif
                             @endforeach
                         </td>

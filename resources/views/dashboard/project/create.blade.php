@@ -24,7 +24,7 @@ Tambah Data Project
                 </div>
                 <div class="form-group">
                     <label>Nama Project</label>
-                    <input type="nama_project" class="form-control @error('nama_project') is-invalid @enderror" name="nama_project" placeholder="Nama Project">
+                    <input type="text" class="form-control @error('nama_project') is-invalid @enderror" name="nama_project" placeholder="Nama Project">
                     @error('nama_project')
                         <div class="alert alert-danger">{{ $message }}</div>
                     @enderror

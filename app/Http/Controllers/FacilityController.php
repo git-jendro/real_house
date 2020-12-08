@@ -24,9 +24,9 @@ class FacilityController extends Controller
      */
     public function index()
     {
-        $fasilitas = Facility::all();
+        $facility = Facility::all();
 
-        return view('fasilitas/index', compact('fasilitas'));
+        return view('/dashboard/facility/index', compact('facility'));
     }
 
     /**
@@ -36,7 +36,7 @@ class FacilityController extends Controller
      */
     public function create()
     {
-        return view('fasilitas/create');
+        return view('/dashboard/facility/create');
     }
 
     /**
@@ -47,12 +47,17 @@ class FacilityController extends Controller
      */
     public function store(Request $request)
     {
-        Facility::create([
-            'nama' => $request->nama,
-            'icon' => Storage::put('Amenity', $request->icon),
+        $request->validate([
+            'nama' => 'required|string|min:2',
+            'icon' => 'required',
         ]);
         
-        return redirect()->action('FacilityController@index');
+        $facility = new Facility;
+        $facility->nama = $request->nama;
+        $facility->icon = Storage::put('Facilitty', $request->icon);
+        $facility->save();
+        
+        return redirect()->action('FacilityController@index')->with('store', 'Data fasilitas berhasil ditambahkan');
     }
 
     /**
@@ -74,9 +79,9 @@ class FacilityController extends Controller
      */
     public function edit($id)
     {
-        $fasilitas = Facility::where('id_facility', $id)->first();
+        $facility = Facility::where('id', $id)->first();
 
-        return view('fasilitas/edit', compact('fasilitas'));
+        return view('/dashboard/facility/edit', compact('facility'));
     }
 
     /**
@@ -88,19 +93,19 @@ class FacilityController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Facility::where('id_facility', $id)
-        ->update([
-            'nama'  => $request->nama
+        $request->validate([
+            'nama' => 'required|string|min:2',
         ]);
+        $facility = Facility::find($id);
+        $facility->nama = $request->nama;
+        $facility->save();
 
         if (request()->has('icon')) {
-            Facility::where('id_facility', $id)
-                ->update([
-                    'icon' => Storage::put('Facility', request()->icon)
-                ]);
+            $facility->icon = Storage::put('Facility', $request->icon);
+            $facility->save();
         }
 
-        return redirect()->action('FacilityController@index');
+        return redirect()->action('FacilityController@index')->with('update', 'Data fasilitas berhasil diupdate');
     }
 
     /**
@@ -113,6 +118,6 @@ class FacilityController extends Controller
     {
         Facility::destroy($id);
 
-        return redirect()->action('FacilityController@index');
+        return redirect()->action('FacilityController@index')->with('delete', 'data Fasilitas berhasil dihapus');
     }
 }

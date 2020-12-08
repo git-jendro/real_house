@@ -31,10 +31,10 @@ class UnitController extends Controller
     public function index()
     {
         $unit = Unit::all();
-        $amenity = AmenityRules::all();
+        $rules = AmenityRules::all();
         $image = UnitImage::all();
 
-        return view('/unit/index', compact('unit', 'amenity', 'image'));
+        return view('/dashboard/unit/index', compact('unit', 'rules', 'image'));
     }
 
     /**
@@ -132,7 +132,7 @@ class UnitController extends Controller
         $unit = Unit::where('id_unit', $id)->first();
         $amenity = AmenityRules::all();
 
-        return view('/unit/show', compact('unit', 'amenity'));
+        return view('/dashboard/unit/show', compact('unit', 'amenity'));
     }
 
     /**
@@ -155,7 +155,7 @@ class UnitController extends Controller
 
         // dd($ame);
 
-        return view('/unit/edit', compact('unit', 'amenity', 'ame', 'building', 'image'));
+        return view('/dashboard/unit/edit', compact('unit', 'amenity', 'ame', 'building', 'image'));
     }
 
     /**

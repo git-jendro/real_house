@@ -8,19 +8,15 @@ class FacilityRules extends Model
 {
     protected $table = 'facility_rules';
 
-    protected $fillable = [
-        'id_building', 'id_facility'
-    ];
-
-    protected $primaryKey = 'id_rules';
+    protected $guard = 'id';
 
     public function building()
     {
-        return $this->belongsTo('App\Building', 'id_building', 'id_building');
+        return $this->belongsTo(Building::class);
     }
 
     public function facility()
     {
-        return $this->belongsTo('App\Facility', 'id_facility', 'id_facility');
+        return $this->belongsTo(Facility::class);
     }
 }

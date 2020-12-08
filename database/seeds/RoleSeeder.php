@@ -14,15 +14,15 @@ class RoleSeeder extends Seeder
     {
         DB::table('roles')->insert([
          'nama' => 'Admin',
-         ]);
+        ]);
         DB::table('roles')->insert([
         'nama' => 'Project Manager',
         ]);
         DB::table('roles')->insert([
          'nama' => 'Marketing',
-         ]);
+        ]);
         DB::table('roles')->insert([
          'nama' => 'Customer',
-         ]);
+        ]);
     }
 }

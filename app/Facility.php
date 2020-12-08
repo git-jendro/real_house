@@ -6,14 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Facility extends Model
 {
-    protected $fillable = [
-        'nama', 'icon'
-    ];
-
-    protected $primaryKey = 'id_facility';
+    protected $guard = 'id';
 
     public function rules()
     {
-        return $this->hasMany('App\facilityRules', 'id_facility');
+        return $this->hasMany(FacilityRules::class);
     }
 }

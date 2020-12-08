@@ -58,4 +58,38 @@ Route::middleware('dashboard')->group(function () {
     Route::get('/dashboard/building/{id}/edit', 'BuildingController@edit');
     Route::patch('/dashboard/building/{id}', 'BuildingController@update');
     Route::get('/dashboard/building/{id}/delete', 'BuildingController@destroy');
+    Route::get('/dashboard/building/{building}/{facility}', 'BuildingController@facility');
+});
+
+//Facility Route
+Route::middleware('dashboard')->group(function () {
+    Route::get('/dashboard/facility', 'FacilityController@index');
+    Route::get('/dashboard/facility/create', 'FacilityController@create');
+    Route::post('/dashboard/facility/store', 'FacilityController@store');
+    Route::get('/dashboard/facility/{id}', 'FacilityController@show');
+    Route::get('/dashboard/facility/{id}/edit', 'FacilityController@edit');
+    Route::patch('/dashboard/facility/{id}', 'FacilityController@update');
+    Route::get('/dashboard/facility/{id}/delete', 'FacilityController@destroy');
+});
+
+//Amenity Route
+Route::middleware('dashboard')->group(function () {
+    Route::get('/dashboard/amenity', 'AmenityController@index');
+    Route::get('/dashboard/amenity/create', 'AmenityController@create');
+    Route::post('/dashboard/amenity/store', 'AmenityController@store');
+    Route::get('/dashboard/amenity/{id}', 'AmenityController@show');
+    Route::get('/dashboard/amenity/{id}/edit', 'AmenityController@edit');
+    Route::patch('/dashboard/amenity/{id}', 'AmenityController@update');
+    Route::get('/dashboard/amenity/{id}/delete', 'AmenityController@destroy');
+});
+
+//Unit Route
+Route::middleware('dashboard')->group(function () {
+    Route::get('/dashboard/unit', 'UnitController@index');
+    Route::get('/dashboard/unit/create', 'UnitController@create');
+    Route::post('/dashboard/unit/store', 'UnitController@store');
+    Route::get('/dashboard/unit/{id}', 'UnitController@show');
+    Route::get('/dashboard/unit/{id}/edit', 'UnitController@edit');
+    Route::patch('/dashboard/unit/{id}', 'UnitController@update');
+    Route::get('/dashboard/unit/{id}/delete', 'UnitController@destroy');
 });
