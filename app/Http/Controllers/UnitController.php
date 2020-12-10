@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Amenity;
 use App\AmenityRules;
 use App\Building;
+use App\Facility;
 use App\FacilityRules;
-use App\ImageRules;
 use App\Unit;
 use App\UnitImage;
 use Illuminate\Http\Request;
@@ -46,9 +46,9 @@ class UnitController extends Controller
     {
         $building = Building::all();
         $amenity = Amenity::all();
-        $image = UnitImage::max('id_image');
+        $image = UnitImage::max('id');
 
-        return view('unit/create', compact('building', 'amenity' ,'image'));
+        return view('/dashboard/unit/create', compact('building', 'amenity' ,'image'));
     }
 
     /**
@@ -59,29 +59,46 @@ class UnitController extends Controller
      */
     public function store(Request $request)
     {
+
+        $request->validate([
+            'building_id' => 'required',
+            'nama' => 'required|string|min:3',
+            'harga_jual' => 'required|numeric|min:6',
+            'harga_sewa' => 'required|numeric|min:6',
+            'harga_cicil' => 'required|numeric|min:6',
+            'diskon' => 'required|numeric',
+            'deskripsi' => 'required|min:8'
+        ]);
+
         $unit = new Unit;
-        $unit->id_building  = $request->id_building;
+        $unit->building_id  = $request->building_id;
         $unit->nama         = $request->nama;
         $unit->deskripsi    = $request->deskripsi;
         $unit->harga_jual   = $request->harga_jual;
         $unit->harga_sewa   = $request->harga_sewa;
         $unit->harga_cicil  = $request->harga_cicil;
         $unit->diskon       = $request->diskon;
-        $unit->vr_link      = $request->vr_link;
         $unit->save();
+        
+        if (request()->has('vr_link')) {
+        $unit->vr_link = $request->vr_link;
+        $unit->save();
+        }
 
-        $loop1 = $request->get('id_amenity');
-        foreach ($loop1 as $key) {
-            $amenity = new AmenityRules;
-            $amenity->id_unit = $unit->id_unit;
-            $amenity->id_amenity = $key;
-            $amenity->save();
-        };
+        if (request()->has('amenity_id')) {
+            $loop1 = $request->get('amenity_id');
+            foreach ($loop1 as $key) {
+                $amenity = new AmenityRules;
+                $amenity->unit_id = $unit->id;
+                $amenity->amenity_id = $key;
+                $amenity->save();
+            };
+        }
 
         if (request()->has('utama')) {
             $utama = new UnitImage;
             $name = $request->utama->getClientOriginalName();
-            $utama->id_unit = $unit->id_unit;
+            $utama->unit_id = $unit->id;
             $utama->path = $request->utama->storeAs('Unit', $name);
             $utama->role = '1';
             $utama->save();
@@ -91,7 +108,7 @@ class UnitController extends Controller
         if (request()->has('tri')) {
             $tri = new UnitImage;
             $name = $request->tri->getClientOriginalName();
-            $tri->id_unit = $unit->id_unit;
+            $tri->unit_id = $unit->id;
             $tri->path = $request->tri->storeAs('Unit', $name);
             $tri->role = '2';
             $tri->save();
@@ -100,7 +117,7 @@ class UnitController extends Controller
         if (request()->has('denah')) {
             $denah = new UnitImage;
             $name = $request->denah->getClientOriginalName();
-            $denah->id_unit = $unit->id_unit;
+            $denah->unit_id = $unit->id;
             $denah->path = $request->denah->storeAs('Unit', $name);
             $denah->role = '4';
             $denah->save();
@@ -111,14 +128,14 @@ class UnitController extends Controller
             foreach ($loop2 as $key) {
                 $image = new UnitImage;
                 $name = $key->getClientOriginalName();
-                $image->id_unit = $unit->id_unit;
+                $image->unit_id = $unit->id;
                 $image->path = $key->storeAs('Unit', $name);
                 $image->role = '3';
                 $image->save();
             };
         }
 
-        return redirect()->action('UnitController@index');
+        return redirect()->action('UnitController@index')->with('store', 'Data unit berhasil ditambahkan');
     }
 
     /**
@@ -129,7 +146,7 @@ class UnitController extends Controller
      */
     public function show($id)
     {
-        $unit = Unit::where('id_unit', $id)->first();
+        $unit = Unit::where('id', $id)->first();
         $amenity = AmenityRules::all();
 
         return view('/dashboard/unit/show', compact('unit', 'amenity'));
@@ -143,15 +160,15 @@ class UnitController extends Controller
      */
     public function edit($id)
     {
+        $unit = Unit::where('id', $id)->first();
         $list = new Amenity;
-        $unit = Unit::where('id_unit', $id)->first();
-        $rules = AmenityRules::select('id_amenity')->where('id_unit', $id);
+        $rules = AmenityRules::select('amenity_id')->where('unit_id', $id)->get();
         $amenity = $list->whereHas('rules', function ($query) use ($rules){
-            $query->whereIn('id_amenity', $rules);
+            $query->whereIn('amenity_id', $rules);
         })->get();
         $ame = $list->get();
         $building = Building::all();
-        $image = UnitImage::where('id_unit', $id)->get();
+        $image = UnitImage::where('unit_id', $id)->get();
 
         // dd($ame);
 
@@ -167,68 +184,103 @@ class UnitController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (Unit::where('id_unit',$id)->exists()) {
-            $unit = Unit::find($id);
-            $unit->id_building  = is_null($request->id_building) ? $unit->id_building : $request->id_building ;
-            $unit->nama         = is_null($request->nama) ? $unit->nama : $request->nama ;
-            $unit->deskripsi    = is_null($request->deskripsi) ? $unit->deskripsi : $request->deskripsi ;
-            $unit->harga_jual   = is_null($request->harga_jual) ? $unit->harga_jual : $request->harga_jual ;
-            $unit->harga_sewa   = is_null($request->harga_sewa) ? $unit->harga_sewa : $request->harga_sewa ;
-            $unit->harga_cicil  = is_null($request->harga_cicil) ? $unit->harga_cicil : $request->harga_cicil ;
-            $unit->diskon       = is_null($request->diskon) ? $unit->diskon : $request->diskon ;
-            $unit->vr_link      = is_null($request->vr_link) ? $unit->vr_link : $request->vr_link ;
+        $request->validate([
+            'building_id' => 'required',
+            'nama' => 'required|string|min:3',
+            'harga_jual' => 'required|numeric|min:6',
+            'harga_sewa' => 'required|numeric|min:6',
+            'harga_cicil' => 'required|numeric|min:6',
+            'diskon' => 'required|numeric',
+            'deskripsi' => 'required|min:8'
+        ]);
+
+        $unit = Unit::find($id);
+        $unit->building_id  = $request->building_id ;
+        $unit->nama         = $request->nama ;
+        $unit->deskripsi    = $request->deskripsi ;
+        $unit->harga_jual   = $request->harga_jual ;
+        $unit->harga_sewa   = $request->harga_sewa ;
+        $unit->harga_cicil  = $request->harga_cicil ;
+        $unit->diskon       = $request->diskon ;
+        $unit->save();
+
+        if (request()->has('vr_link')) {
+            $unit->vr_link = $request->vr_link;
             $unit->save();
-
-            if (request()->has('utama')) {
-                $name = $request->utama->getClientOriginalName();
-                UnitImage::where([
-                    ['id_unit', $id],
-                    ['role', 1]
-                ])->update([
-                    'path' => $request->utama->storeAs('Unit', $name)
-                ]);
-            }
-            
-            if (request()->has('tri')) {
-                $name = $request->tri->getClientOriginalName();
-                UnitImage::where([
-                    ['id_unit', $id],
-                    ['role', 2]
-                ])->update([
-                    'path' => $request->tri->storeAs('Unit', $name)
-                ]);
-            }
-
-            if (request()->has('denah')) {
-                $name = $request->denah->getClientOriginalName();
-                UnitImage::where([
-                    ['id_unit', $id],
-                    ['role', 4]
-                ])->update([
-                    'path' => $request->denah->storeAs('Unit', $name)
-                ]);
-            }
-
-            if(request()->has('path')){
-                UnitImage::where([
-                    ['id_unit', $id],
-                    ['role', 3]
-                ])->delete();
-                $loop2 = $request->file('path');
-                foreach ($loop2 as $key) {
-                    $image = new UnitImage;
-                    $name = $key->getClientOriginalName();
-                    $image->id_unit = $unit->id_unit;
-                    $image->path = $key->storeAs('Unit', $name);
-                    $image->role = '3';
-                    $image->save();
-                };
+        } else {
+            AmenityRules::where('unit_id', $unit->id)->delete('vr_link');
         }
-            
 
+        if (request()->has('amenity_id')) {
+            AmenityRules::where('unit_id', $unit->id)->delete();
 
-            return redirect()->action('UnitController@index');
-        }
+            $loop = $request->get('amenity_id');
+            foreach ($loop as $key) {
+                $facility = new AmenityRules;
+                $facility->unit_id = $unit->id;
+                $facility->amenity_id = $key;
+                $facility->save();
+            };
+            } else {
+                AmenityRules::where('unit_id', $unit->id)->delete();
+            }
+
+        if (request()->has('utama')) {
+            UnitImage::where([
+                ['unit_id', $id],
+                ['role', 1]
+            ])->delete();
+            $image = new UnitImage;
+            $name = $request->utama->getClientOriginalName();
+            $image->unit_id = $unit->id;
+            $image->path = $request->utama->storeAs('Unit', $name);
+            $image->role = '1';
+            $image->save();
+        } 
+        
+        if (request()->has('tri')) {
+            UnitImage::where([
+                ['unit_id', $id],
+                ['role', 2]
+            ])->delete();
+            $image = new UnitImage;
+            $name = $request->tri->getClientOriginalName();
+            $image->unit_id = $unit->id;
+            $image->path = $request->tri->storeAs('Unit', $name);
+            $image->role = '2';
+            $image->save();
+        } 
+
+        if (request()->has('denah')) {
+            UnitImage::where([
+                ['unit_id', $id],
+                ['role', 4]
+            ])->delete();
+            $image = new UnitImage;
+            $name = $request->denah->getClientOriginalName();
+            $image->unit_id = $unit->id;
+            $image->path = $request->denah->storeAs('Unit', $name);
+            $image->role = '4';
+            $image->save();
+        } 
+
+        if(request()->has('path')){
+            UnitImage::where([
+                ['unit_id', $id],
+                ['role', 3]
+            ])->delete();
+            $loop2 = $request->file('path');
+            foreach ($loop2 as $key) {
+                $image = new UnitImage;
+                $name = $key->getClientOriginalName();
+                $image->unit_id = $unit->id;
+                $image->path = $key->storeAs('Unit', $name);
+                $image->role = '3';
+                $image->save();
+            };
+        } 
+
+        return redirect()->action('UnitController@index');
 
     }
 
@@ -248,20 +300,20 @@ class UnitController extends Controller
     public function check($unit,  $amenity)
     {
         $check = AmenityRules::where([
-            ['id_unit', $unit],
+            ['unit_id', $unit],
             ['id_amenity', $amenity]
         ])->count();
         
         if ($check == 0) {
             AmenityRules::create([
-                'id_unit'       => $unit,
+                'unit_id'       => $unit,
                 'id_amenity'    => $amenity
             ]);
 
             return response()->json('Input');
         } else {
             AmenityRules::where([
-                ['id_unit', $unit],
+                ['unit_id', $unit],
                 ['id_amenity', $amenity]
             ])->delete();
 

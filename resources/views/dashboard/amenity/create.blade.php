@@ -56,7 +56,7 @@ Tambah Data Amenity
                 var filesAmount = input.files.length;
                 for (i = 0; i < filesAmount; i++) {
                     var reader = new FileReader();
-                        
+                        $('.icon').html('');
                     reader.onload = function(event) {
                         $($.parseHTML('<img>')).attr({src: event.target.result, class: "mr-1", onclick:""}).appendTo(placeToInsertImagePreview);
                     }

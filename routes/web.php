@@ -20,14 +20,19 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
-Route::get('/', 'HomeController@index')->name('home');
+Route::get('/', 'HomeController@welcome');
+Route::get('/list', 'HomeController@list');
+Route::get('/detail/{id}', 'HomeController@detail');
+Route::get('/360/{id}', 'HomeController@tiga');
+Route::get('/vr/{id}', 'HomeController@vr');
 
 
 // Dashboard Controller --------------------------------------------------------------------------
-Route::get('/dashboard', 'HomeController@dashboard')->name('dashboard.route')->middleware('dashboard');
+// Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/dashboard', 'HomeController@dashboard')->name('dashboard.route')->middleware(['auth', 'dashboard']);
 
 //User Route
-Route::middleware('dashboard')->group(function () {
+Route::middleware(['auth', 'dashboard'])->group(function () {
     Route::get('/dashboard/user', 'UserController@index');
     Route::get('/dashboard/user/create', 'UserController@create');
     Route::post('/dashboard/user/store', 'UserController@store');
@@ -39,7 +44,7 @@ Route::middleware('dashboard')->group(function () {
 
 
 //Project Route
-Route::middleware('dashboard')->group(function () {
+Route::middleware(['auth', 'dashboard'])->group(function () {
     Route::get('/dashboard/project', 'ProjectController@index');
     Route::get('/dashboard/project/create', 'ProjectController@create');
     Route::post('/dashboard/project/store', 'ProjectController@store');
@@ -50,7 +55,7 @@ Route::middleware('dashboard')->group(function () {
 });
 
 //Building Route
-Route::middleware('dashboard')->group(function () {
+Route::middleware(['auth', 'dashboard'])->group(function () {
     Route::get('/dashboard/building', 'BuildingController@index');
     Route::get('/dashboard/building/create', 'BuildingController@create');
     Route::post('/dashboard/building/store', 'BuildingController@store');
@@ -62,7 +67,7 @@ Route::middleware('dashboard')->group(function () {
 });
 
 //Facility Route
-Route::middleware('dashboard')->group(function () {
+Route::middleware(['auth', 'dashboard'])->group(function () {
     Route::get('/dashboard/facility', 'FacilityController@index');
     Route::get('/dashboard/facility/create', 'FacilityController@create');
     Route::post('/dashboard/facility/store', 'FacilityController@store');
@@ -73,7 +78,7 @@ Route::middleware('dashboard')->group(function () {
 });
 
 //Amenity Route
-Route::middleware('dashboard')->group(function () {
+Route::middleware(['auth', 'dashboard'])->group(function () {
     Route::get('/dashboard/amenity', 'AmenityController@index');
     Route::get('/dashboard/amenity/create', 'AmenityController@create');
     Route::post('/dashboard/amenity/store', 'AmenityController@store');
@@ -84,7 +89,7 @@ Route::middleware('dashboard')->group(function () {
 });
 
 //Unit Route
-Route::middleware('dashboard')->group(function () {
+Route::middleware(['auth', 'dashboard'])->group(function () {
     Route::get('/dashboard/unit', 'UnitController@index');
     Route::get('/dashboard/unit/create', 'UnitController@create');
     Route::post('/dashboard/unit/store', 'UnitController@store');

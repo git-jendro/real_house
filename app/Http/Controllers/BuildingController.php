@@ -140,25 +140,6 @@ class BuildingController extends Controller
         $building->deskripsi    = $request->deskripsi;
         $building->save();
 
-        // $loop = $request->get('facility_id');
-        // foreach ($loop as $key) {
-        //     $check = FacilityRules::where([
-        //         ['building_id', $building->id],
-        //         ['facility_id', $key]
-        //     ])->count();
-            
-        //     if ($check == 1) {
-        //         FacilityRules::where([
-        //             ['building_id', $building->id],
-        //             ['facility_id', $key]
-        //         ])->delete();
-        //     }
-        //     $facility = new FacilityRules;
-        //     $facility->building_id = $building->id;
-        //     $facility->facility_id = $key;
-        //     $facility->save();
-        // };
-
         if ($request->facility_id != null) {
             FacilityRules::where('building_id', $building->id)->delete();
 

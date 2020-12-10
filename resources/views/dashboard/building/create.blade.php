@@ -33,7 +33,7 @@ Tambah Data Building
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Facility</label>
+                    <label>Fasilitas</label>
                     <div class="d-flex justify-content-evenly col-5">
                         @foreach ($facility as $item)
                         <div class="col-3 text-center">

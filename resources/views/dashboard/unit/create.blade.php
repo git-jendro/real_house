@@ -1,7 +1,7 @@
 @extends('layouts.layout')
 
 @section('header')
-Tambah Data Building
+Tambah Data Unit
 @endsection
 @section('content')
 <div class="container">
@@ -11,35 +11,34 @@ Tambah Data Building
         </div>
         <!-- /.card-header -->
         <!-- form start -->
-        <form action="/dashboard/building/store" method="POST" enctype="multipart/form-data">
+        <form action="/dashboard/unit/store" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="card-body">
                 <div class="form-group">
-                    <label>Nama Building</label>
+                    <label>Nama Unit</label>
                     <input type="text" class="form-control @error('nama') is-invalid @enderror" name="nama"
-                        placeholder="Nama Building">
+                        placeholder="Nama Unit">
                     @error('nama')
                     <div class="alert alert-danger">{{ $message }}</div>
                     @enderror
                 </div>
                 <div class="form-group">
-                    <label>Nama Project</label>
-                    <select name="project_id" class="form-control @error('project_id') is-invalid @enderror"
-                        name="project_id">
-                        <option value="">Pilih Project</option>
-                        @foreach ($project as $item)
-                        <option value="{{$item->id}}">{{$item->nama_project}}</option>
+                    <label>Nama Unit</label>
+                    <select name="building_id" class="form-control @error('building_id') is-invalid @enderror"
+                        name="building_id">
+                        <option value="">Pilih Building</option>
+                        @foreach ($building as $item)
+                        <option value="{{$item->id}}">{{$item->nama}}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Facility</label>
+                    <label>Kelengkapan</label>
                     <div class="d-flex justify-content-evenly col-5">
-                        @foreach ($facility as $item)
+                        @foreach ($amenity as $item)
                         <div class="col-3 text-center">
                             <div>
-                                <input type="checkbox" name="facility_id[]" value="{{$item->id}}"
-                                    class="form-control">
+                                <input type="checkbox" name="amenity_id[]" value="{{$item->id}}" class="form-control">
                                 {{$item->nama}}
                             </div>
                             <div>
@@ -53,27 +52,53 @@ Tambah Data Building
                 <div class="form-group">
                     <div class="row">
                         <div class="col-2 form-group">
-                            <label>Jumlah Lantai</label>
+                            <label>Harga Jual</label>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text">Lt.</span>
+                                    <span class="input-group-text">Rp </span>
                                 </div>
-                                <input type="text" class="form-control @error('lantai') is-invalid @enderror"
-                                    name="lantai" placeholder="Jumlah Lantai">
-                                @error('lantai')
+                                <input type="text" class="form-control @error('harga_jual') is-invalid @enderror"
+                                    name="harga_jual" placeholder="Harga Jual">
+                                @error('harga_jual')
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
                         <div class="col-2 form-group">
-                            <label>Luas Building</label>
+                            <label>Harga Sewa</label>
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control @error('luas') is-invalid @enderror" name="luas"
-                                    placeholder="Luas Building">
-                                <div class="input-group-append">
-                                    <span class="input-group-text">m<sup>2</sup></span>
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Rp </span>
                                 </div>
-                                @error('luas')
+                                <input type="text" class="form-control @error('harga_sewa') is-invalid @enderror"
+                                    name="harga_sewa" placeholder="Harga Sewa">
+                                @error('harga_sewa')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-2 form-group">
+                            <label>Harga Cicil</label>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Rp </span>
+                                </div>
+                                <input type="text" class="form-control @error('harga_cicil') is-invalid @enderror"
+                                    name="harga_cicil" placeholder="Harga Cicil">
+                                @error('harga_cicil')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-2 form-group">
+                            <label>Diskon</label>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control @error('diskon') is-invalid @enderror"
+                                    name="diskon" placeholder="Diskon">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">%</span>
+                                </div>
+                                @error('diskon')
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -88,6 +113,60 @@ Tambah Data Building
                     <div class="alert alert-danger">{{ $message }}</div>
                     @enderror
                 </div>
+                <div class="form-group">
+                    <label>Link Video VR</label>
+                    <div class="vid py-2">
+                        <div class="iframe"></div>
+                    </div>
+                    <input type="text" id="vr_link" class="form-control @error('vr_link') is-invalid @enderror"
+                        name="vr_link" onkeyup="link()" value="{{$unit->vr_link}}">
+                    @error('vr_link')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label>Gambar Utama</label>
+                    <div class="ugallery py-2">
+
+                    </div>
+                    <input type="file" class="form-control @error('utama') is-invalid @enderror" id="utama"
+                        name="utama">
+                    @error('utama')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label>List Gambar</label>
+                    <div class="lgallery py-2">
+
+                    </div>
+                    <input type="file" class="form-control @error('path') is-invalid @enderror" multiple name="path[]"
+                        id="foto">
+                    @error('path')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label>Gambar 360</label>
+                    <div class="tgallery py-2">
+
+                    </div>
+                    <input type="file" class="form-control @error('tri') is-invalid @enderror" name="tri" id="360">
+                    @error('tri')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label>Denah</label>
+                    <div class="dgallery py-2">
+
+                    </div>
+                    <input type="file" class="form-control @error('denah') is-invalid @enderror" name="denah"
+                        id="denah">
+                    @error('denah')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
+                </div>
             </div>
             <!-- /.card-body -->
 
@@ -98,3 +177,102 @@ Tambah Data Building
     </div>
 </div>
 @endsection
+<style>
+    .ugallery img {
+        width: 20%;
+    }
+
+    .lgallery img {
+        width: 20%;
+    }
+
+    .tgallery img {
+        width: 20%;
+    }
+
+</style>
+<script src="{{asset('js/jquery.min.js')}}"></script>
+<script type="text/javascript">
+    $(function() {
+        var imagesPreview = function(input, placeToInsertImagePreview) {
+            if (input.files) {
+                var filesAmount = input.files.length;
+                for (i = 0; i < filesAmount; i++) {
+                    var reader = new FileReader();
+                        $('.lgallery').html('');
+                    reader.onload = function(event) {
+                        $($.parseHTML('<img>')).attr({src: event.target.result, class: "mr-1", onclick:""}).appendTo(placeToInsertImagePreview);
+                    }
+                    reader.readAsDataURL(input.files[i]);
+                }
+            }
+        };
+        $('#foto').on('change', function() {
+            imagesPreview(this, 'div.lgallery');
+        });
+    });
+    $(function() {
+        var imagesPreview = function(input, placeToInsertImagePreview) {
+            
+            if (input.files) {
+                var filesAmount = input.files.length;
+                for (i = 0; i < filesAmount; i++) {
+                    var reader = new FileReader();
+                    reader.onload = function(event) {
+                        $('.ugallery').html('');
+                        $($.parseHTML('<img>')).attr({src: event.target.result, class: "mr-1", onclick:""}).appendTo(placeToInsertImagePreview);
+                    }
+                    reader.readAsDataURL(input.files[i]);
+                }
+            }
+        };
+        $('#utama').on('change', function() {
+            imagesPreview(this, 'div.ugallery');
+        });
+    });
+    $(function() {
+        var imagesPreview = function(input, placeToInsertImagePreview) {
+            if (input.files) {
+                var filesAmount = input.files.length;
+                for (i = 0; i < filesAmount; i++) {
+                    var reader = new FileReader();
+                    reader.onload = function(event) {
+                        $('.tgallery').html('');
+                        $($.parseHTML('<img>')).attr({src: event.target.result, class: "mr-1", onclick:""}).appendTo(placeToInsertImagePreview);
+                    }
+                    reader.readAsDataURL(input.files[i]);
+                }
+            }
+        };
+        $('#360').on('change', function() {
+            imagesPreview(this, 'div.tgallery');
+        });
+    });
+    $(function() {
+        var imagesPreview = function(input, placeToInsertImagePreview) {
+            if (input.files) {
+                var filesAmount = input.files.length;
+                for (i = 0; i < filesAmount; i++) {
+                    var reader = new FileReader();
+                    reader.onload = function(event) {
+                        $('.dgallery').html('');
+                        $($.parseHTML('<img>')).attr({src: event.target.result, class: "mr-1", onclick:""}).appendTo(placeToInsertImagePreview);
+                    }
+                    reader.readAsDataURL(input.files[i]);
+                }
+            }
+        };
+        $('#denah').on('change', function() {
+            imagesPreview(this, 'div.dgallery');
+        });
+    });
+    function link() {
+        var vr_link = $("#vr_link").val();
+        $.ajax({
+            success : function(res) {
+                console.log(vr_link);
+                $('.iframe').html(vr_link);
+            }
+        })
+    }
+</script>

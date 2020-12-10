@@ -8,14 +8,10 @@ class UnitImage extends Model
 {
     protected $table = 'unit_images';
 
-    protected $primaryKey = 'id_image';
-
-    protected $fillable = [
-        'id_unit', 'path', 'main'
-    ];
+    protected $guard = 'id';
 
     public function unit()
     {
-        return $this->belongsTo('App\Unit', 'id_unit', 'id_unit');
+        return $this->belongsTo(Unit::class);
     }
 }

@@ -32,8 +32,32 @@ class UserSeeder extends Seeder
             'password' => Hash::make('123123'),
          ]);
         DB::table('users')->insert([
-            'name' => 'Markering1',
+            'name' => 'Marketing1',
             'email' => 'marketing1@gmail.com',
+            'role_id' => 3,
+            'password' => Hash::make('123123'),
+         ]);
+        DB::table('users')->insert([
+            'name' => 'Marketing2',
+            'email' => 'marketing2@gmail.com',
+            'role_id' => 3,
+            'password' => Hash::make('123123'),
+         ]);
+        DB::table('users')->insert([
+            'name' => 'Marketing3',
+            'email' => 'marketing3@gmail.com',
+            'role_id' => 3,
+            'password' => Hash::make('123123'),
+         ]);
+        DB::table('users')->insert([
+            'name' => 'Marketing4',
+            'email' => 'marketing4@gmail.com',
+            'role_id' => 3,
+            'password' => Hash::make('123123'),
+         ]);
+        DB::table('users')->insert([
+            'name' => 'Marketing5',
+            'email' => 'marketing5@gmail.com',
             'role_id' => 3,
             'password' => Hash::make('123123'),
          ]);
