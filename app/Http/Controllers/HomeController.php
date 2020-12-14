@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\AmenityRules;
+use App\FacilityRules;
 use App\Unit;
 use App\UnitImage;
 use App\User;
@@ -56,11 +57,13 @@ class HomeController extends Controller
 
     public function detail($id)
     {
+        $uuid = null;
         $unit = Unit::where('id',  $id)->first();
         $image = UnitImage::where('unit_id', $id)->get();
         $amenity = AmenityRules::where('unit_id', $id)->get();
-
-        return view('detail', compact('unit', 'image', 'amenity'));
+        $facility = FacilityRules::where('building_id', $unit->building_id)->get();
+        // dd($facility);
+        return view('detail', compact('unit', 'image', 'amenity', 'facility', 'uuid'));
     }
 
     public function tiga($id)

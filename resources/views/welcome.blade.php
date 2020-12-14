@@ -11,7 +11,8 @@
                 <div class="carousel-caption banner-slider-inner d-flex h-100 text-center">
                     <div class="carousel-content container">
                         <div class="text-center">
-                            <h3 class="text-uppercase" data-animation="animated fadeInDown delay-05s">Find Your Dream House</h3>
+                            <h3 class="text-uppercase" data-animation="animated fadeInDown delay-05s">Find Your Dream
+                                House</h3>
                             <p data-animation="animated fadeInUp delay-10s">
                                 This is real estate website template based on Bootstrap 4 framework.
                             </p>
@@ -25,7 +26,8 @@
                 <div class="carousel-caption banner-slider-inner d-flex h-100 text-center">
                     <div class="carousel-content container">
                         <div class="text-right">
-                            <h3 class="text-uppercase" data-animation="animated fadeInDown delay-05s">Find Your Dream House</h3>
+                            <h3 class="text-uppercase" data-animation="animated fadeInDown delay-05s">Find Your Dream
+                                House</h3>
                             <p data-animation="animated fadeInUp delay-10s">
                                 This is real estate website template based on Bootstrap 4 framework.
                             </p>
@@ -39,7 +41,8 @@
                 <div class="carousel-caption banner-slider-inner d-flex h-100 text-center">
                     <div class="carousel-content container">
                         <div class="text-left">
-                            <h3 class="text-uppercase" data-animation="animated fadeInDown delay-05s">Find Your Dream House</h3>
+                            <h3 class="text-uppercase" data-animation="animated fadeInDown delay-05s">Find Your Dream
+                                House</h3>
                             <p data-animation="animated fadeInUp delay-10s">
                                 This is real estate website template based on Bootstrap 4 framework.
                             </p>
@@ -67,18 +70,32 @@
 <div class="featured-properties content-area-9">
     <div class="container">
         <!-- Main title -->
+        @if (session('success'))
+        <div class="alert alert-success wow fadeInLeft delay-03s" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+            {{ session('success') }}
+        </div>
+        @elseif (session('fail'))
+        <div class="alert alert-danger wow fadeInLeft delay-03s" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+            {{ session('fail') }}
+        </div>
+        @endif
         <div class="main-title">
             <h1>Featured Properties</h1>
             <p>Find Your Properties In Your City</p>
         </div>
 
         <div class="slick-slider-area">
-            <div class="row slick-carousel" data-slick='{"slidesToShow": 3, "responsive":[{"breakpoint": 1024,"settings":{"slidesToShow": 2}}, {"breakpoint": 768,"settings":{"slidesToShow": 1}}]}'>
+            <div class="row slick-carousel"
+                data-slick='{"slidesToShow": 3, "responsive":[{"breakpoint": 1024,"settings":{"slidesToShow": 2}}, {"breakpoint": 768,"settings":{"slidesToShow": 1}}]}'>
                 @foreach ($unit as $item)
                 <div class="slick-slide-item">
                     <div class="property-box">
                         <div class="property-thumbnail" style="height: 20rem">
-                            <a href="#" class="property-img">
+                            <a href="/detail/{{$item->id}}" class="property-img">
                                 @if ($item->diskon != null)
                                 <div class="listing-badges">
                                     <span class="featured">Disc {{$item->diskon}} %</span>
@@ -92,24 +109,27 @@
 
                                 <div id="carouselExampleIndicators1" class="carousel slide" data-ride="carousel">
                                     <ol class="carousel-indicators">
-                                        <li data-target="#carouselExampleIndicators1" data-slide-to="0" class="active"></li>
+                                        <li data-target="#carouselExampleIndicators1" data-slide-to="0" class="active">
+                                        </li>
                                         <li data-target="#carouselExampleIndicators1" data-slide-to="1"></li>
                                         <li data-target="#carouselExampleIndicators1" data-slide-to="2"></li>
                                     </ol>
                                     <div class="carousel-inner">
                                         @foreach ($image as $row)
-                                            @if ($row->unit_id == $item->id)
-                                                @if ($row->role == 1)
-                                                    <div class="carousel-item active">
-                                                        <img class="d-block w-100" src="{{ asset('storage/'.$row->path) }}" alt="properties">
-                                                    </div>
-                                                @endif
-                                                @if ($row->role == 3)
-                                                <div class="carousel-item">
-                                                    <img class="d-block w-100" src="{{ asset('storage/'.$row->path) }}" alt="properties">
-                                                </div>
-                                                @endif
-                                            @endif
+                                        @if ($row->unit_id == $item->id)
+                                        @if ($row->role == 1)
+                                        <div class="carousel-item active">
+                                            <img class="d-block w-100" src="{{ asset('storage/'.$row->path) }}"
+                                                alt="properties">
+                                        </div>
+                                        @endif
+                                        @if ($row->role == 3)
+                                        <div class="carousel-item">
+                                            <img class="d-block w-100" src="{{ asset('storage/'.$row->path) }}"
+                                                alt="properties">
+                                        </div>
+                                        @endif
+                                        @endif
                                         @endforeach
                                     </div>
                                 </div>
@@ -117,20 +137,21 @@
                         </div>
                         <div class="detail mt-2" style="height:13rem">
                             <h1 class="title">
-                                <a href="properties-details.html">{{$item->nama}}</a>
+                                <a href="/detail/{{$item->id}}">{{$item->nama}}</a>
                             </h1>
                             <div class="location">
-                                <a href="properties-details.html">
+                                <a href="/detail/{{$item->id}}">
                                     <i class="fa fa-map-marker"></i>{{$item->building->project->alamat}}
                                 </a>
                             </div>
                             <ul class="facilities-list clearfix">
                                 @foreach ($amenity as $row)
-                                    @if ($row->unit_id == $item->id)
-                                    <li class="py-2" style="line-height: 20px">
-                                        <img src="{{ asset('storage/'.$row->amenity->icon) }}" width="10%" class="slick-slide mr-2">{{$row->amenity->nama}}
-                                    </li>
-                                    @endif
+                                @if ($row->unit_id == $item->id)
+                                <li class="py-2" style="line-height: 20px">
+                                    <img src="{{ asset('storage/'.$row->amenity->icon) }}" width="10%"
+                                        class="slick-slide mr-2">{{$row->amenity->nama}}
+                                </li>
+                                @endif
                                 @endforeach
                             </ul>
                         </div>
@@ -138,7 +159,7 @@
                             <div class="pull-left days">
                                 <p><i class="flaticon-time"></i>
                                     @if ($item->updated_at == null)
-                                        Uploaded at : {{$item->created_at}}
+                                    Uploaded at : {{$item->created_at}}
                                     @endif
                                     Updated at : {{$item->updated_at}}
                                 </p>
@@ -175,28 +196,32 @@
                 <div class="service-info-5">
                     <i class="flaticon-apartment"></i>
                     <h4>Apartments</h4>
-                    <p>Lorem ipsum dolor sit amet, consectur adipisicing elit, sed do eiusmod tempor incididunt ut labore</p>
+                    <p>Lorem ipsum dolor sit amet, consectur adipisicing elit, sed do eiusmod tempor incididunt ut
+                        labore</p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 wow fadeInLeft delay-04s">
                 <div class="service-info-5">
                     <i class="flaticon-internet"></i>
                     <h4>Houses</h4>
-                    <p>Lorem ipsum dolor sit amet, consectur adipisicing elit, sed do eiusmod tempor incididunt ut labore</p>
+                    <p>Lorem ipsum dolor sit amet, consectur adipisicing elit, sed do eiusmod tempor incididunt ut
+                        labore</p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 wow fadeInRight delay-04s">
                 <div class="service-info-5">
                     <i class="flaticon-vehicle"></i>
                     <h4>Garages</h4>
-                    <p>Lorem ipsum dolor sit amet, consectur adipisicing elit, sed do eiusmod tempor incididunt ut labore</p>
+                    <p>Lorem ipsum dolor sit amet, consectur adipisicing elit, sed do eiusmod tempor incididunt ut
+                        labore</p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 wow fadeInRight delay-04s">
                 <div class="service-info-5">
                     <i class="flaticon-coins"></i>
                     <h4>Commercial</h4>
-                    <p>Lorem ipsum dolor sit amet, consectur adipisicing elit, sed do eiusmod tempor incididunt ut labore</p>
+                    <p>Lorem ipsum dolor sit amet, consectur adipisicing elit, sed do eiusmod tempor incididunt ut
+                        labore</p>
                 </div>
             </div>
         </div>

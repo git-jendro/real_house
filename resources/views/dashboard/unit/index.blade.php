@@ -5,9 +5,11 @@
 @endsection
 @section('content')
 <div class="container">
+    @if (Auth::user()->role_id == 1)
     <div class="py-2">
         <a href="/dashboard/unit/create" class="btn btn-primary">Tambah Unit</a>
     </div>
+    @endif
     @if (session('store')) 
     <div class="alert alert-success">
         {{ session('store') }}
@@ -32,11 +34,12 @@
                         <th class="col-auto">Kelengkapan</th>
                         <th class="col-auto">Gambar</th>
                         <th class="col-auto">Harga Jual</th>
-                        <th class="col-auto">Harga Sewa</th>
-                        <th class="col-auto">Harga Cicil</th>
+                        <th class="col-auto">Stock</th>
                         <th class="col-auto">Diskon</th>
-                        <th class="col-auto">Deskripsi</th>
+                        <th class="col-auto">Bonus Marketing</th>
+                        @if (Auth::user()->role_id == 1)
                         <th colspan="3" class="text-center">Action</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -64,20 +67,18 @@
                             @endforeach
                         </td>
                         <td class="col-auto">
-                            {{Str::limit($item->harga_jual)}}
+                            {{$item->harga_jual}}
                         </td>
                         <td class="col-auto">
-                            {{Str::limit($item->harga_sewa)}}
+                            {{$item->stock}}
                         </td>
                         <td class="col-auto">
-                            {{Str::limit($item->harga_cicil)}}
-                        </td>
-                        <td class="col-auto">
-                            {{Str::limit($item->diskon)}}
+                            {{$item->diskon}}
                         </td>
                         <td>
-                            {{Str::limit($item->deskripsi, 20)}}
+                            {{$item->bonus->bonus_marketing}}
                         </td>
+                        @if (Auth::user()->role_id == 1)
                         <td class="text-center">
                             <a href="/dashboard/unit/{{$item->id}}">
                                 <i class="fas fa-eye"></i>
@@ -93,6 +94,7 @@
                                 <i class="fas fa-trash-alt"></i>
                             </a>
                         </td>
+                        @endif
                     </tr>
                     @endforeach
                 </tbody>

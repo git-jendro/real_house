@@ -6,10 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Reseller extends Model
 {
-    protected $guard = 'id';
+    protected $fillable = ['status'];
 
-    public function marketing()
+    public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function log()
+    {
+        return $this->hasOne(Log::class);
+    }
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class);
     }
 }

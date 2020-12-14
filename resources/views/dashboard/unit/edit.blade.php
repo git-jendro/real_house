@@ -1,7 +1,7 @@
 @extends('layouts.layout')
 
 @section('header')
-Tambah Data Unit
+Edit Data Unit
 @endsection
 @section('content')
 <div class="container">
@@ -24,14 +24,28 @@ Tambah Data Unit
                     @enderror
                 </div>
                 <div class="form-group">
-                    <label>Nama Unit</label>
-                    <select name="building_id" class="form-control @error('building_id') is-invalid @enderror"
-                        name="building_id">
-                        <option value="{{$unit->building_id}}">{{$unit->building->nama}}</option>
-                        @foreach ($building as $item)
-                        <option value="{{$item->id}}">{{$item->nama}}</option>
-                        @endforeach
-                    </select>
+                    <div class="row">
+                        <div class="col-4 form-group">
+                            <label>Nama Building</label>
+                            <select name="building_id" class="form-control @error('building_id') is-invalid @enderror"
+                                name="building_id">
+                                <option value="{{$unit->building_id}}">{{$unit->building->nama}}</option>
+                                @foreach ($building as $item)
+                                <option value="{{$item->id}}">{{$item->nama}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-4 form-group">
+                            <label>Marketing Agent</label>
+                            <select name="user_id" class="form-control @error('user_id') is-invalid @enderror"
+                                name="user_id">
+                                <option value="{{$unit->user_id}}">{{$unit->user->name}}</option>
+                                @foreach ($user as $item)
+                                <option value="{{$item->id}}">{{$item->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Kelengkapan</label>
@@ -67,7 +81,7 @@ Tambah Data Unit
                                 @enderror
                             </div>
                         </div>
-                        <div class="col-2 form-group">
+                        {{-- <div class="col-2 form-group">
                             <label>Harga Sewa</label>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -79,7 +93,7 @@ Tambah Data Unit
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="col-2 form-group">
                             <label>Harga Cicil</label>
                             <div class="input-group mb-3">
@@ -106,6 +120,29 @@ Tambah Data Unit
                                 @enderror
                             </div>
                         </div>
+                        <div class="col-2 form-group">
+                            <label>Stock</label>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control @error('stock') is-invalid @enderror"
+                                    name="stock" placeholder="Stock" value="{{$unit->stock}}">
+                                @error('stock')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-2 form-group">
+                            <label>Bonus Marketing</label>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Rp </span>
+                                </div>
+                                <input type="text" class="form-control @error('bonus_marketing') is-invalid @enderror"
+                                    name="bonus_marketing" placeholder="Bonus" value="{{$unit->bonus->bonus_marketing}}">
+                                @error('bonus_marketing')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
@@ -120,10 +157,10 @@ Tambah Data Unit
                     <label>Link Video VR</label>
                     <div class="vid py-2">
                         <div class="iframe">
-                            {{$unit->vr_link}}
                         </div>
                     </div>
-                    <input type="text" id="vr_link" class="form-control @error('vr_link') is-invalid @enderror" name="vr_link" onkeyup="link()" value="{{$unit->vr_link}}">
+                    <input type="text" id="vr_link" class="form-control @error('vr_link') is-invalid @enderror"
+                        name="vr_link" onkeyup="link()" value="{{$unit->vr_link}}">
                     @error('vr_link')
                     <div class="alert alert-danger">{{ $message }}</div>
                     @enderror
@@ -132,9 +169,9 @@ Tambah Data Unit
                     <label>Gambar Utama</label>
                     <div class="ugallery py-2">
                         @foreach ($image as $item)
-                            @if ($item->role == 1)
-                                <img src="{{ asset('storage/'.$item->path) }}">
-                            @endif
+                        @if ($item->role == 1)
+                        <img src="{{ asset('storage/'.$item->path) }}">
+                        @endif
                         @endforeach
                     </div>
                     <input type="file" class="form-control @error('utama') is-invalid @enderror" id="utama"
@@ -147,9 +184,9 @@ Tambah Data Unit
                     <label>List Gambar</label>
                     <div class="lgallery py-2">
                         @foreach ($image as $item)
-                            @if ($item->role == 3)
-                                <img src="{{ asset('storage/'.$item->path) }}">
-                            @endif
+                        @if ($item->role == 3)
+                        <img src="{{ asset('storage/'.$item->path) }}">
+                        @endif
                         @endforeach
                     </div>
                     <input type="file" class="form-control @error('path') is-invalid @enderror" multiple name="path[]"
@@ -162,9 +199,9 @@ Tambah Data Unit
                     <label>Gambar 360</label>
                     <div class="tgallery py-2">
                         @foreach ($image as $item)
-                            @if ($item->role == 2)
-                                <img src="{{ asset('storage/'.$item->path) }}">
-                            @endif 
+                        @if ($item->role == 2)
+                        <img src="{{ asset('storage/'.$item->path) }}">
+                        @endif
                         @endforeach
                     </div>
                     <input type="file" class="form-control @error('tri') is-invalid @enderror" name="tri" id="360">
@@ -176,9 +213,9 @@ Tambah Data Unit
                     <label>Denah</label>
                     <div class="dgallery py-2">
                         @foreach ($image as $item)
-                            @if ($item->role == 4)
-                                <img src="{{ asset('storage/'.$item->path) }}">
-                            @endif 
+                        @if ($item->role == 4)
+                        <img src="{{ asset('storage/'.$item->path) }}">
+                        @endif
                         @endforeach
                     </div>
                     <input type="file" class="form-control @error('denah') is-invalid @enderror" name="denah"
@@ -209,7 +246,6 @@ Tambah Data Unit
     .tgallery img {
         width: 20%;
     }
-
 </style>
 <script src="{{asset('js/jquery.min.js')}}"></script>
 <script type="text/javascript">
@@ -285,6 +321,14 @@ Tambah Data Unit
         $('#denah').on('change', function() {
             imagesPreview(this, 'div.dgallery');
         });
+    });
+    $( document ).ready(function() {
+        var vr_link = $("#vr_link").val();
+        $.ajax({
+            success : function(res) {
+                $('.iframe').html(vr_link);
+            }
+        })
     });
     function link() {
         var vr_link = $("#vr_link").val();

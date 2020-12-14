@@ -22,7 +22,10 @@ class CreateUnitsTable extends Migration
             $table->integer('harga_sewa')->nullable();
             $table->integer('harga_cicil')->nullable();
             $table->integer('diskon')->nullable();
+            $table->integer('stock')->nullable();
             $table->string('vr_link')->nullable();
+            $table->integer('user_id');
+            $table->integer('bonus');
             $table->timestamps();
         });
     }

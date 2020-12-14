@@ -8,7 +8,7 @@ class Unit extends Model
 {
     protected $guard = 'id';
 
-    public function marketing()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
@@ -26,5 +26,15 @@ class Unit extends Model
     public function image()
     {
         return $this->hasMany(UnitImage::class);
+    }
+
+    public function reseller()
+    {
+        return $this->hasMany(Reseller::class);
+    }
+
+    public function bonus()
+    {
+        return $this->hasOne(Bonus::class);
     }
 }

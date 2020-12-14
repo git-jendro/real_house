@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Amenity;
 use App\AmenityRules;
+use App\Bonus;
 use App\Building;
 use App\Facility;
 use App\FacilityRules;
 use App\Unit;
 use App\UnitImage;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -47,8 +49,9 @@ class UnitController extends Controller
         $building = Building::all();
         $amenity = Amenity::all();
         $image = UnitImage::max('id');
+        $user = User::where('role_id', 3)->get();
 
-        return view('/dashboard/unit/create', compact('building', 'amenity' ,'image'));
+        return view('/dashboard/unit/create', compact('building', 'amenity' ,'image', 'user'));
     }
 
     /**
@@ -59,15 +62,16 @@ class UnitController extends Controller
      */
     public function store(Request $request)
     {
-
         $request->validate([
             'building_id' => 'required',
+            'user_id' => 'required',
             'nama' => 'required|string|min:3',
             'harga_jual' => 'required|numeric|min:6',
-            'harga_sewa' => 'required|numeric|min:6',
             'harga_cicil' => 'required|numeric|min:6',
             'diskon' => 'required|numeric',
-            'deskripsi' => 'required|min:8'
+            'bonus_marketing' => 'required|numeric',
+            'deskripsi' => 'required|min:8',
+            'stock' => 'required|numeric',
         ]);
 
         $unit = new Unit;
@@ -75,10 +79,17 @@ class UnitController extends Controller
         $unit->nama         = $request->nama;
         $unit->deskripsi    = $request->deskripsi;
         $unit->harga_jual   = $request->harga_jual;
-        $unit->harga_sewa   = $request->harga_sewa;
         $unit->harga_cicil  = $request->harga_cicil;
         $unit->diskon       = $request->diskon;
+        $unit->user_id       = $request->user_id;
+        $unit->stock       = $request->stock;
         $unit->save();
+
+        $bonus = new Bonus;
+        $bonus->unit_id = $unit->id;
+        $bonus->bonus_marketing = $request->bonus_marketing;
+        $bonus->bonus_reseller = 0;
+        $bonus->save();
         
         if (request()->has('vr_link')) {
         $unit->vr_link = $request->vr_link;
@@ -162,17 +173,17 @@ class UnitController extends Controller
     {
         $unit = Unit::where('id', $id)->first();
         $list = new Amenity;
-        $rules = AmenityRules::select('amenity_id')->where('unit_id', $id)->get();
+        $rules = AmenityRules::select('amenity_id')->where('unit_id', $id);
         $amenity = $list->whereHas('rules', function ($query) use ($rules){
             $query->whereIn('amenity_id', $rules);
         })->get();
         $ame = $list->get();
         $building = Building::all();
         $image = UnitImage::where('unit_id', $id)->get();
+        $user = User::where('role_id', 3)->get();
 
-        // dd($ame);
 
-        return view('/dashboard/unit/edit', compact('unit', 'amenity', 'ame', 'building', 'image'));
+        return view('/dashboard/unit/edit', compact('unit', 'amenity', 'ame', 'building', 'image', 'user'));
     }
 
     /**
@@ -186,22 +197,25 @@ class UnitController extends Controller
     {
         $request->validate([
             'building_id' => 'required',
+            'user_id' => 'required',
             'nama' => 'required|string|min:3',
             'harga_jual' => 'required|numeric|min:6',
-            'harga_sewa' => 'required|numeric|min:6',
             'harga_cicil' => 'required|numeric|min:6',
             'diskon' => 'required|numeric',
-            'deskripsi' => 'required|min:8'
+            'bonus_marketing' => 'required|numeric',
+            'deskripsi' => 'required|min:8',
+            'stock' => 'required|numeric',
         ]);
-
+        
         $unit = Unit::find($id);
         $unit->building_id  = $request->building_id ;
         $unit->nama         = $request->nama ;
         $unit->deskripsi    = $request->deskripsi ;
         $unit->harga_jual   = $request->harga_jual ;
-        $unit->harga_sewa   = $request->harga_sewa ;
         $unit->harga_cicil  = $request->harga_cicil ;
         $unit->diskon       = $request->diskon ;
+        $unit->stock        = $request->stock;
+        $unit->user_id      = $request->user_id;
         $unit->save();
 
         if (request()->has('vr_link')) {
@@ -280,7 +294,12 @@ class UnitController extends Controller
             };
         } 
 
-        return redirect()->action('UnitController@index');
+        Bonus::where('unit_id', $id)
+            ->update([
+                'bonus_marketing' => $request->bonus_marketing
+            ]);
+
+        return redirect()->action('UnitController@index')->with('update', 'Data unit berhasil diupdate');
 
     }
 
@@ -294,33 +313,33 @@ class UnitController extends Controller
     {
         Unit::destroy($id);
 
-        return redirect()->action('UnitController@index');
+        return redirect()->action('UnitController@index')->with('delete', 'Data unit berhasil dihapus');
     }
 
-    public function check($unit,  $amenity)
-    {
-        $check = AmenityRules::where([
-            ['unit_id', $unit],
-            ['id_amenity', $amenity]
-        ])->count();
+    // public function check($unit,  $amenity)
+    // {
+    //     $check = AmenityRules::where([
+    //         ['unit_id', $unit],
+    //         ['id_amenity', $amenity]
+    //     ])->count();
         
-        if ($check == 0) {
-            AmenityRules::create([
-                'unit_id'       => $unit,
-                'id_amenity'    => $amenity
-            ]);
+    //     if ($check == 0) {
+    //         AmenityRules::create([
+    //             'unit_id'       => $unit,
+    //             'id_amenity'    => $amenity
+    //         ]);
 
-            return response()->json('Input');
-        } else {
-            AmenityRules::where([
-                ['unit_id', $unit],
-                ['id_amenity', $amenity]
-            ])->delete();
+    //         return response()->json('Input');
+    //     } else {
+    //         AmenityRules::where([
+    //             ['unit_id', $unit],
+    //             ['id_amenity', $amenity]
+    //         ])->delete();
 
-            return response()->json('Hapus');
-        }
+    //         return response()->json('Hapus');
+    //     }
         
         
-        // return response()->json($check);
-    }
+    //     // return response()->json($check);
+    // }
 }

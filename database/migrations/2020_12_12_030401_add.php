@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddStockToUnitsTable extends Migration
+class Add extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class AddStockToUnitsTable extends Migration
      */
     public function up()
     {
-        Schema::table('units', function (Blueprint $table) {
-            $table->integer('stock')->nullable();
+        Schema::table('logs', function (Blueprint $table) {
+            $table->integer('lihat')->nullable();
+            $table->integer('book')->nullable();
+            $table->integer('bayar')->nullable();
         });
     }
 
@@ -25,7 +27,7 @@ class AddStockToUnitsTable extends Migration
      */
     public function down()
     {
-        Schema::table('units', function (Blueprint $table) {
+        Schema::table('logs', function (Blueprint $table) {
             //
         });
     }

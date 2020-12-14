@@ -25,6 +25,10 @@ Route::get('/list', 'HomeController@list');
 Route::get('/detail/{id}', 'HomeController@detail');
 Route::get('/360/{id}', 'HomeController@tiga');
 Route::get('/vr/{id}', 'HomeController@vr');
+Route::get('/buy/{id}', 'HomeController@buy');
+Route::get('/buy/{uuid}/{id}/ref', 'ResellerController@buy');
+Route::get('/ref/{uuid}', 'ResellerController@show');
+
 
 
 // Dashboard Controller --------------------------------------------------------------------------
@@ -97,4 +101,11 @@ Route::middleware(['auth', 'dashboard'])->group(function () {
     Route::get('/dashboard/unit/{id}/edit', 'UnitController@edit');
     Route::patch('/dashboard/unit/{id}', 'UnitController@update');
     Route::get('/dashboard/unit/{id}/delete', 'UnitController@destroy');
+});
+
+//Reseller Route
+Route::middleware(['auth', 'dashboard'])->group(function () {
+    Route::get('/dashboard/reseller', 'ResellerController@index');
+    Route::post('/dashboard/reseller/generate', 'ResellerController@generate');
+    Route::get('/dashboard/reseller/{id}/delete', 'ResellerController@destroy');
 });
