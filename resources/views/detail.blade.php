@@ -118,14 +118,13 @@
                                         <h3 class="heading-2">Video</h3>
                                     </div>
                                 </div>
-                                {{-- <div class="tab-pane fade " id="4" role="tabpanel" aria-labelledby="4-tab">
-                                    <div class="inside-properties mb-50">
+                                <div class="tab-pane fade " id="4" role="tabpanel" aria-labelledby="4-tab" style="height: 500px">
+                                    <div class="inside-properties mb-5" id="panel">
                                         <h3 class="heading-2">
                                             360
                                         </h3>
-                                        <iframe src="https://www.youtube.com/embed/5e0LxrLSzok" allowfullscreen=""></iframe>
                                     </div>
-                                </div> --}}
+                                </div>
                                 <div class="tab-pane fade " id="5" role="tabpanel" aria-labelledby="5-tab">
                                     <div class="location mb-50">
                                         <div class="map">
@@ -490,13 +489,15 @@
     </div>
 </div>
 @endsection
-
+<style>
+    #panel {
+        width: 700px;
+        height: 400px;
+    }
+    </style>
 <script type="text/javascript" src="{{asset('pannellum/pannellum.js')}}"></script>
 <script>
     function tiga(id) {
-        $('#content').html('');
-        $('#footer').html('');
-        $('#content').append('<div id="panel"><button onclick="back('+id+')" class="w3-button w3-block w3-white" type="button">Back</button></div></div></div>');
         $.ajax({
             type : 'GET',
             url : 'http://localhost:8000/360/'+id,

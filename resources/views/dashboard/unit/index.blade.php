@@ -41,8 +41,10 @@
                         @if (Auth::user()->role_id == 1)
                         <th colspan="3" class="text-center">Action</th>
                         @endif
-                        @endif
+                        @else
                         <th colspan="3" class="text-center">Share</th>
+                        @endif
+                        
                     </tr>
                 </thead>
                 <tbody>
@@ -79,33 +81,34 @@
                             {{$item->diskon}}
                         </td>
                         @if (Auth::user()->role_id != 5)
-                        <td>
-                            {{$item->bonus->bonus_marketing}}
-                        </td>
-                        @if (Auth::user()->role_id == 1)
-                        <td class="text-center">
-                            <a href="/dashboard/unit/{{$item->id}}">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                        </td>
-                        <td class="text-center">
-                            <a href="/dashboard/unit/{{$item->id}}/edit">
-                                <i class="fas fa-pen"></i>
-                            </a>
-                        </td>
-                        <td class="text-center">
-                            <a href="/dashboard/unit/{{$item->id}}/delete">
-                                <i class="fas fa-trash-alt"></i>
-                            </a>
-                        </td>
+                            <td>
+                                {{$item->bonus->bonus_marketing}}
+                            </td>
+                                @if (Auth::user()->role_id == 1)
+                                <td class="text-center">
+                                    <a href="/dashboard/unit/{{$item->id}}">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                                <td class="text-center">
+                                    <a href="/dashboard/unit/{{$item->id}}/edit">
+                                        <i class="fas fa-pen"></i>
+                                    </a>
+                                </td>
+                                <td class="text-center">
+                                    <a href="/dashboard/unit/{{$item->id}}/delete">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </td>
+                                @endif
+                            @else
+                            <td class="text-center">
+                                <a href="whatsapp://send?text=www.real-house.com/ref/{{$item->reseller->uuid}}" data-action="share/whatsapp/share"><i class="fab fa-whatsapp"></i></a>
+                                {{-- <a href="whatsapp://send?text=The text to share!" data-action="share/whatsapp/share">
+                                    <a href="/ref/{{$item->reseller->uuid}}">/ref/{{$item->reseller->uuid}}</a>
+                                </a> --}}
+                            </td>
                         @endif
-                        @endif
-                        <td class="text-center">
-                            <a href="whatsapp://send?text=www.real-house.com/ref/{{$item->reseller->uuid}}" data-action="share/whatsapp/share"><i class="fab fa-whatsapp"></i></a>
-                            {{-- <a href="whatsapp://send?text=The text to share!" data-action="share/whatsapp/share">
-                                <a href="/ref/{{$item->reseller->uuid}}">/ref/{{$item->reseller->uuid}}</a>
-                            </a> --}}
-                        </td>
                     </tr>
                     @endforeach
                 </tbody>

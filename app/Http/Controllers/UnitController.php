@@ -33,7 +33,8 @@ class UnitController extends Controller
     public function index()
     {
         if (Auth::user()->role_id == 3) {
-            $unit = Unit::where('user_id', Auth::user()->id);
+            $unit = Unit::where('user_id', Auth::user()->id)->get();
+            // dd(Auth::user()->id);
             $rules = AmenityRules::all();
             $image = UnitImage::all();
 
