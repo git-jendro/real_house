@@ -6,12 +6,12 @@ use App\Amenity;
 use App\AmenityRules;
 use App\Bonus;
 use App\Building;
-use App\Facility;
-use App\FacilityRules;
+use App\Reseller;
 use App\Unit;
 use App\UnitImage;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class UnitController extends Controller
@@ -32,11 +32,27 @@ class UnitController extends Controller
      */
     public function index()
     {
-        $unit = Unit::all();
-        $rules = AmenityRules::all();
-        $image = UnitImage::all();
+        if (Auth::user()->role_id == 3) {
+            $unit = Unit::where('user_id', Auth::user()->id);
+            $rules = AmenityRules::all();
+            $image = UnitImage::all();
 
-        return view('/dashboard/unit/index', compact('unit', 'rules', 'image'));
+            return view('/dashboard/unit/index', compact('unit', 'rules', 'image'));
+        } elseif (Auth::user()->role_id == 5) {
+            $reseller = Reseller::where('nama', Auth::user()->name)->first();
+            $unit = Unit::where('id', $reseller->unit_id)->get();
+            // dd($unit);
+            $rules = AmenityRules::all();
+            $image = UnitImage::all();
+
+            return view('/dashboard/unit/index', compact('unit', 'rules', 'image'));
+        } else {
+            $unit = Unit::all();
+            $rules = AmenityRules::all();
+            $image = UnitImage::all();
+    
+            return view('/dashboard/unit/index', compact('unit', 'rules', 'image'));
+        }
     }
 
     /**
@@ -206,7 +222,7 @@ class UnitController extends Controller
             'deskripsi' => 'required|min:8',
             'stock' => 'required|numeric',
         ]);
-        
+
         $unit = Unit::find($id);
         $unit->building_id  = $request->building_id ;
         $unit->nama         = $request->nama ;

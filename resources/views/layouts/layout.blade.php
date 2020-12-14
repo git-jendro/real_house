@@ -136,6 +136,14 @@
                                     </p>
                                 </a>
                             </li>
+                            <li class="nav-item py-2">
+                                <a href="/dashboard/reseller" class="nav-link">
+                                    <i class="nav-icon fas fa-user-friends"></i>
+                                    <p>
+                                        Reseller
+                                    </p>
+                                </a>
+                            </li>
                             @else
                             <li class="nav-item py-2">
                                 <a href="/dashboard/reseller" class="nav-link">

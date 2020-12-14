@@ -36,10 +36,13 @@
                         <th class="col-auto">Harga Jual</th>
                         <th class="col-auto">Stock</th>
                         <th class="col-auto">Diskon</th>
+                        @if (Auth::user()->role_id != 5)
                         <th class="col-auto">Bonus Marketing</th>
                         @if (Auth::user()->role_id == 1)
                         <th colspan="3" class="text-center">Action</th>
                         @endif
+                        @endif
+                        <th colspan="3" class="text-center">Share</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -75,6 +78,7 @@
                         <td class="col-auto">
                             {{$item->diskon}}
                         </td>
+                        @if (Auth::user()->role_id != 5)
                         <td>
                             {{$item->bonus->bonus_marketing}}
                         </td>
@@ -95,6 +99,13 @@
                             </a>
                         </td>
                         @endif
+                        @endif
+                        <td class="text-center">
+                            <a href="whatsapp://send?text=www.real-house.com/ref/{{$item->reseller->uuid}}" data-action="share/whatsapp/share"><i class="fab fa-whatsapp"></i></a>
+                            {{-- <a href="whatsapp://send?text=The text to share!" data-action="share/whatsapp/share">
+                                <a href="/ref/{{$item->reseller->uuid}}">/ref/{{$item->reseller->uuid}}</a>
+                            </a> --}}
+                        </td>
                     </tr>
                     @endforeach
                 </tbody>

@@ -30,7 +30,7 @@ class Unit extends Model
 
     public function reseller()
     {
-        return $this->hasMany(Reseller::class);
+        return $this->hasOne(Reseller::class);
     }
 
     public function bonus()

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\AmenityRules;
+use App\Bonus;
 use App\FacilityRules;
 use App\Log;
 use App\Reseller;
@@ -25,10 +26,10 @@ class ResellerController extends Controller
     public function index()
     {
         if (Auth::user()->role_id == 5) {
-            $reseller = Reseller::where('user_id', Auth::user()->id)->get();
+            $reseller = Reseller::where('nama', Auth::user()->name)->get();
             $role = Role::where('id', 5)->get();
 
-            return view('/dashboard/reseller/index', compact('reseller', 'unit', 'role'));
+            return view('/dashboard/reseller/index', compact('reseller', 'role'));
         }
         $reseller = Reseller::all();
         $unit = Unit::where('user_id', Auth::user()->id)->get();
@@ -36,7 +37,7 @@ class ResellerController extends Controller
 
         return view('/dashboard/reseller/index', compact('reseller', 'unit', 'role'));
     }
-
+ 
     public function generate(Request $request)
     {
         $request->validate([
@@ -44,6 +45,7 @@ class ResellerController extends Controller
             'unit_id' => 'required',
             'email' => 'required|unique:users|min:8|email',
             'password' => 'required|min:6',
+            'bonus_reseller' => 'required',
         ]);
         $reseller = new Reseller;
         $reseller->user_id = Auth::user()->id;
@@ -66,14 +68,22 @@ class ResellerController extends Controller
         $user->name = $request->nama;
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
-        $user->role_id = $request->role;
+        $user->role_id = 5;
         $user->save();
+
+        Bonus::where('unit_id', $request->unit_id)
+            ->update([
+                'bonus_reseller' => $request->bonus_reseller
+            ]);
         
         return redirect()->action('ResellerController@index')->with('store', 'Data reseller berhasil ditambahkan');
     }
 
     public function destroy($id)
     {
+        $reseller = Reseller::where('id', $id)->first();
+        
+        User::where('name', $reseller->nama)->delete();
         Reseller::destroy($id);
 
         return redirect()->action('ResellerController@index')->with('delete', 'Data reseller berhasil dihapus');
